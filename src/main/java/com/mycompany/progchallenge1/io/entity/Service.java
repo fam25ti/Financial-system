@@ -30,17 +30,17 @@ public class Service {
     @Basic(optional = false)
     private Long serviceId;
     
-    @Column(name = "SERVICE_NAME", length = 300)
+    @Column(name = "SERVICE_NAME",unique = true, length = 300)
     private String serviceName;
     
-    @Column(name = "SERVICE_COST")
+    @Column(name = "SERVICE_COST", columnDefinition = "float default 10")
     private float serviceCost;
     
     @Column(name = "ALLOWED_TIMES")
     private int allowedTimes;
     
-    @Column(name = "SERVICE_STATUS")    
-    private boolean serviceStatus;
+//    @Column(name = "SERVICE_STATUS", columnDefinition = "boolean default false")    
+//    private boolean serviceStatus;
     
     @ManyToMany(mappedBy = "services")
     private Set<User> users;
@@ -64,9 +64,9 @@ public class Service {
         return allowedTimes;
     }
 
-    public boolean isServiceStatus() {
-        return serviceStatus;
-    }
+//    public boolean isServiceStatus() {
+//        return serviceStatus;
+//    }
 
     public Set<User> getUsers() {
         return users;
@@ -92,9 +92,9 @@ public class Service {
         this.allowedTimes = allowedTimes;
     }
 
-    public void setServiceStatus(boolean serviceStatus) {
-        this.serviceStatus = serviceStatus;
-    }
+//    public void setServiceStatus(boolean serviceStatus) {
+//        this.serviceStatus = serviceStatus;
+//    }
 
     public void setUsers(Set<User> users) {
         this.users = users;
@@ -106,7 +106,7 @@ public class Service {
 
     @Override
     public String toString() {
-        return "Service{" + "serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceCost=" + serviceCost + ", allowedTimes=" + allowedTimes + ", serviceStatus=" + serviceStatus + ", users=" + users + ", periods=" + periods + '}';
+        return "Service{" + "serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceCost=" + serviceCost + ", allowedTimes=" + allowedTimes + ", users=" + users + ", periods=" + periods + '}';
     }
    
     
