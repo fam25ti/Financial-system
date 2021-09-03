@@ -5,11 +5,15 @@
  */
 package com.mycompany.progchallenge1.io.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +27,7 @@ import javax.persistence.OneToMany;
  * @author Mahsa
  */
 @Entity
-public class Service {
+public class Service implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SERVICE_ID")
@@ -42,10 +46,18 @@ public class Service {
 //    @Column(name = "SERVICE_STATUS", columnDefinition = "boolean default false")    
 //    private boolean serviceStatus;
     
-    @ManyToMany(mappedBy = "services")
-    private Set<User> users;
     
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+//    @ManyToMany(cascade = { CascadeType.PERSIST })
+//    @JsonManagedReference
+//    @JoinTable(
+//        name = "USER_SERVICE", 
+//        joinColumns = { @JoinColumn(name = "SERVICE_ID") }, 
+//        inverseJoinColumns = { @JoinColumn(name = "USER_ID") })
+    @ManyToMany(mappedBy = "services")
+    @JsonBackReference
+    private Set<User> users;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "service", cascade = CascadeType.PERSIST)
     Set<ServicePeriod> periods;
 
     public Long getServiceId() {

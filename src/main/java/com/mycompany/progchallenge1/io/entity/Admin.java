@@ -5,6 +5,7 @@
  */
 package com.mycompany.progchallenge1.io.entity;
 
+import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ import javax.persistence.Id;
  * @author Mahsa
  */
 @Entity
-public class Admin {
+public class Admin implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ADMIN_ID")
