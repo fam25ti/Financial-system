@@ -108,6 +108,7 @@
  */
 package com.mycompany.progchallenge1.io.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -121,6 +122,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -144,12 +146,25 @@ public class User {
     @Column(name = "CREDIT",columnDefinition = "float default 0")    
     private float credit;
     
-    @ManyToMany(cascade = { CascadeType.PERSIST})
+    @OneToMany(mappedBy =  "_user")
+    @JsonBackReference
+    private Set<UserService> userservices;
+
+    
+//    @ManyToMany(cascade = { CascadeType.PERSIST})
    // @JsonManagedReference
-    @JoinTable(
-        joinColumns = { @JoinColumn(name = "USER_ID") }, 
-        inverseJoinColumns = { @JoinColumn(name = "SERVICE_ID") })
-    Set<Service> services;
+//    @JoinTable(
+//        joinColumns = { @JoinColumn(name = "USER_ID") }, 
+//        inverseJoinColumns = { @JoinColumn(name = "SERVICE_ID") })
+//    Set<Service> services;
+    public Set<UserService> getUserservices() {
+        return userservices;
+    }
+
+    public void setUserservices(Set<UserService> userservices) {
+        this.userservices = userservices;
+    }
+
 
     public Long getUserId() {
         return userId;
@@ -167,9 +182,9 @@ public class User {
         return credit;
     }
 
-    public Set<Service> getServices() {
-        return services;
-    }
+//    public Set<Service> getServices() {
+//        return services;
+//    }
 
     public void setUserId(Long userId) {
         this.userId = userId;
@@ -187,13 +202,13 @@ public class User {
         this.credit = credit;
     }
 
-    public void setServices(Set<Service> services) {
-        this.services = services;
-    }
+//    public void setServices(Set<Service> services) {
+//        this.services = services;
+//    }
 
     @Override
     public String toString() {
-        return "User{" + "userId=" + userId + ", userName=" + userName + ", password=" + password + ", credit=" + credit + ", services=" + services + '}';
+        return "User{" + "userId=" + userId + ", userName=" + userName + ", password="  + '}';
     }
     
     

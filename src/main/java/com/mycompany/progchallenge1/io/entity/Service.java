@@ -42,23 +42,18 @@ public class Service implements Serializable{
     
     @Column(name = "ALLOWED_TIMES")
     private int allowedTimes;
+
+//    @ManyToMany(mappedBy = "services")
+//    @JsonBackReference
+//    private Set<User> users;
     
-//    @Column(name = "SERVICE_STATUS", columnDefinition = "boolean default false")    
-//    private boolean serviceStatus;
-    
-    
-//    @ManyToMany(cascade = { CascadeType.PERSIST })
-//    @JsonManagedReference
-//    @JoinTable(
-//        name = "USER_SERVICE", 
-//        joinColumns = { @JoinColumn(name = "SERVICE_ID") }, 
-//        inverseJoinColumns = { @JoinColumn(name = "USER_ID") })
-    @ManyToMany(mappedBy = "services")
+    @OneToMany(mappedBy =  "_service")
     @JsonBackReference
-    private Set<User> users;
+    private Set<UserService> userservices;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "service", cascade = CascadeType.PERSIST)
-    Set<ServicePeriod> periods;
+    private Set<ServicePeriod> periods;
 
     public Long getServiceId() {
         return serviceId;
@@ -80,9 +75,9 @@ public class Service implements Serializable{
 //        return serviceStatus;
 //    }
 
-    public Set<User> getUsers() {
-        return users;
-    }
+//    public Set<User> getUsers() {
+//        return users;
+//    }
 
     public Set<ServicePeriod> getPeriods() {
         return periods;
@@ -108,17 +103,25 @@ public class Service implements Serializable{
 //        this.serviceStatus = serviceStatus;
 //    }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
 
     public void setPeriods(Set<ServicePeriod> periods) {
         this.periods = periods;
     }
 
+    public Set<UserService> getUserservices() {
+        return userservices;
+    }
+
+    public void setUserservices(Set<UserService> userservices) {
+        this.userservices = userservices;
+    }
+    
     @Override
     public String toString() {
-        return "Service{" + "serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceCost=" + serviceCost + ", allowedTimes=" + allowedTimes + ", users=" + users + ", periods=" + periods + '}';
+        return "Service{" + "serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceCost=" + serviceCost + ", allowedTimes=" + allowedTimes  + ", periods=" + periods + '}';
     }
    
     

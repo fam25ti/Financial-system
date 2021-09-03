@@ -7,9 +7,12 @@ package com.mycompany.progchallenge1.ui.controller;
 
 import com.mycompany.progchallenge1.io.dao.ServiceRepository;
 import com.mycompany.progchallenge1.io.dao.UserRepository;
+import com.mycompany.progchallenge1.io.dao.UserServiceRepository;
 import com.mycompany.progchallenge1.io.entity.Service;
 import com.mycompany.progchallenge1.io.entity.ServicePeriod;
 import com.mycompany.progchallenge1.io.entity.User;
+import com.mycompany.progchallenge1.io.entity.UserService;
+import com.mycompany.progchallenge1.io.entity.UserServiceId;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,6 +41,8 @@ public class UserController {
     private UserRepository dao;
     @Autowired
     private ServiceRepository dao2;  
+    @Autowired
+    private UserServiceRepository dao3;
     @PostMapping (path = "/add", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     User insertUser(@RequestBody User user ){
          return dao.save(user);
@@ -87,41 +92,90 @@ public class UserController {
         return dao.findById(userId).get();
     }
     
-    @GetMapping(path = "/grantservice")
+    @GetMapping(path = "/grantservice")//اعطای مجوز یک سرویس با استفاده از ای دی یوزر و اسم سرویس موردنظر
     void grantServiceToUser(@RequestParam (name = "userid") Long userId,@RequestParam (name = "servicename") String serviceName){
         User user = dao.findById(userId).get();
-        user.getServices().add(dao2.findByServiceName(serviceName));
-        dao.save(user);
+        Service service = dao2.findByServiceName(serviceName);
+        UserService us = new UserService();
+        us.setService(service);
+        us.setUser(user);
+        dao3.save(us);
+        
+//        user.getServices().add(dao2.findByServiceName(serviceName));
+//        dao.save(user);
     
-    }//اعطای مجوز یک سرویس با استفاده از ای دی یوزر و اسم سرویس موردنظر
+    }
+    @GetMapping(path = "/cancelservice")//لغو مجوز استفاده یک سرویس برای یوزر
+    void cancelServiceForUser(@RequestParam (name = "userid") Long userId, @RequestParam(name = "servicename") String serviceName){
+        dao3.deleteById(new UserServiceId(userId,dao2.findByServiceName(serviceName).getServiceId()));
+    
+    }
+   
     @GetMapping(path = "/grantedservices")//نمایش سرویس های مجازکاربر
     Set<Service> showGrantedServices(@RequestParam (name = "userid") Long userId){
         
-        return dao.findById(userId).get().getServices();
+        Set<UserService> us =  dao.findById(userId).get().getUserservices();
+        Set<Service> grantServices = new HashSet<Service>();
+        for(UserService userservice: us){
+            grantServices.add(userservice.getService());
+        }
+        return grantServices;
     }
     
+    
+    
     @GetMapping(path = "enabledservices")//نمایش سرویس های فعال کاربر
-    Set<String> showEnabledServices(@RequestParam (name = "userid") Long userId ){
+    Set<Service> showEnabledServices(@RequestParam (name = "userid") Long userId ){
         LocalDate ld = LocalDate.now();
         LocalTime lt = LocalTime.now();
-        Set<String> messages=new HashSet<String>();
-        StringBuilder sb= new StringBuilder("");
-       // System.out.println("local date and time "+ld+"     "+lt);
-        Set<Service> services = dao.getById(userId).getServices();
-        for(Service service : services){
+        Set<Service> enables=new HashSet<Service>();
+        Set<UserService> us =  dao.findById(userId).get().getUserservices();
+        for(UserService userservice: us){
+            Service service = userservice.getService();
             for(ServicePeriod sp : service.getPeriods()){
                 if(sp.getStatus()==true && sp.getDate().compareTo(ld)==0 &&
                         sp.getStart().compareTo(lt)<=0 && sp.getEnd().compareTo(lt)>0){
-                    System.out.println(sp.getStatus()+ " "+sp.getPeriodId());
-                           sb.append("Name: ").append(service.getServiceName()).append(" ,Being active period: ").append(sp.getDate())
-                                   .append("  ").append(sp.getStart()).append(" - ").append(sp.getEnd());
-                           messages.add(sb.toString());
+                            
+                           enables.add(service);
                 }
             }
         }
-        return messages;
+        return enables;
     
     }
+    @GetMapping(path = "/useservice" )
+    String useAnEnabledService(@RequestParam (name = "userid") Long userId, @RequestParam (name = "serviceid") Long serviceId ){
+        Set<Service> enables = showEnabledServices(userId);//call API
+        if(!enables.isEmpty()){
+            for(Service service: enables){
+            if(serviceId==service.getServiceId()){
+                UserService userService = dao3.findById(new UserServiceId(userId,serviceId)).get();
+                if(userService.getUsetimes()<service.getAllowedTimes()){//چک کردن سقف مجازتعداد دفعات استفاده سرویس برای استفاده کاربر
+                    User user = dao.findById(userId).get();
+                    if(user.getCredit()>=service.getServiceCost()){
+                        userService.setUsetimes(((userService.getUsetimes())+1));//update number of usage times
+                        user.setCredit((user.getCredit()-service.getServiceCost()));
+                        dao.save(user);
+                        dao3.save(userService);
+                        return "You have used this service successfully!";
+                    }
+                    else{
+                        return "you have not enough credit for this service!";
+                    }
+                }
+                else{
+                        return "You have reached the authorized limit for using this service!";
+                }
+            }
+        }
+        }
+        
+        
+        
+    return "You have no enable service to use!";
+    
+    }
+
     
     
     
