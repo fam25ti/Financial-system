@@ -6,6 +6,7 @@
 package com.mycompany.progchallenge1.io.dao;
 
 import com.mycompany.progchallenge1.io.entity.User;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,6 +34,9 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Modifying
     @Query("update User user set user.credit = :credit where user.userId = :id")
     void updateCreditById(@Param("credit") float credit, @Param("id") Long id);
-
+    
+    @Transactional
+    User findByUserName(String name);
+    
    
 }

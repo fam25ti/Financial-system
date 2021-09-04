@@ -52,7 +52,6 @@ public class ServicePeriod implements Serializable{
     
     @ManyToOne
     @JsonBackReference
-
     @JoinColumn(name="SERVICE_ID", nullable=false)
     private Service service;
     

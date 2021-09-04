@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserService  {
+public class TheUserService  {
     @Autowired
     private UserRepository dao;
 

@@ -39,7 +39,9 @@ public interface ServiceRepository extends JpaRepository<Service,Long> {
     long deleteByServiceName(String name);
     @Transactional
     Service findByServiceName(String name);
-        
+    @Transactional
+    boolean existsServiceByServiceName(String name);
+   
        
 
 }

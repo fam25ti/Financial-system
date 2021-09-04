@@ -23,7 +23,6 @@ public class UserService {
     private UserServiceId id = new UserServiceId();
     @ManyToOne
     @MapsId("userId")
-    //@JsonManagedReference
 
     private User _user;
  
@@ -57,6 +56,11 @@ public class UserService {
 
     public void setUsetimes(int usetimes) {
         this.usetimes = usetimes;
+    }
+
+    @Override
+    public String toString() {
+        return "UserService{" + "id=" + id + ", _user=" + _user + ", _service=" + _service + ", usetimes=" + usetimes + '}';
     }
     
     

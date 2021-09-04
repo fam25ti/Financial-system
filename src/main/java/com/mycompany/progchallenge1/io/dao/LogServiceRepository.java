@@ -5,8 +5,7 @@
  */
 package com.mycompany.progchallenge1.io.dao;
 
-import com.mycompany.progchallenge1.io.entity.Admin;
-import javax.transaction.Transactional;
+import com.mycompany.progchallenge1.io.entity.LogService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +14,7 @@ import org.springframework.stereotype.Repository;
  * @author Mahsa
  */
 @Repository
-public interface AdminRepository extends JpaRepository<Admin, Long>{
-    @Transactional
-    Admin findByUserName(String name);
+public interface LogServiceRepository extends JpaRepository<LogService, Long>{
+    
     
 }

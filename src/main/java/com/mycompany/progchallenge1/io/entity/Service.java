@@ -42,17 +42,13 @@ public class Service implements Serializable{
     
     @Column(name = "ALLOWED_TIMES")
     private int allowedTimes;
-
-//    @ManyToMany(mappedBy = "services")
-//    @JsonBackReference
-//    private Set<User> users;
     
-    @OneToMany(mappedBy =  "_service")
+    @OneToMany(mappedBy =  "_service", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<UserService> userservices;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "service", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private Set<ServicePeriod> periods;
 
     public Long getServiceId() {
@@ -99,13 +95,6 @@ public class Service implements Serializable{
         this.allowedTimes = allowedTimes;
     }
 
-//    public void setServiceStatus(boolean serviceStatus) {
-//        this.serviceStatus = serviceStatus;
-//    }
-
-//    public void setUsers(Set<User> users) {
-//        this.users = users;
-//    }
 
     public void setPeriods(Set<ServicePeriod> periods) {
         this.periods = periods;
@@ -119,12 +108,12 @@ public class Service implements Serializable{
         this.userservices = userservices;
     }
     
-    @Override
-    public String toString() {
-        return "Service{" + "serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceCost=" + serviceCost + ", allowedTimes=" + allowedTimes  + ", periods=" + periods + '}';
-    }
-   
-    
+//    @Override
+//    public String toString() {
+//        return "Service{" + "serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceCost=" + serviceCost + ", allowedTimes=" + allowedTimes  + ", periods=" + periods + '}';
+//    }
+//   
+//    
     
     
     
