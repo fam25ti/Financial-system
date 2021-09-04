@@ -13,8 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class Application {
-    public static String role="nothing";
+    public static long[] role=new long[2];
+
     public static void main(String args[]){
+    role[0]=0;
+    role[1]=0;
     SpringApplication.run(Application.class, args);
 
        // System.out.println("hello");

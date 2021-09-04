@@ -42,7 +42,7 @@ public class User {
     
     @JsonManagedReference
     //@JsonBackReference
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST ,CascadeType.MERGE})
+    @OneToMany(mappedBy = "user",cascade={CascadeType.PERSIST,CascadeType.MERGE},orphanRemoval=true)
     private Set<LogService> logs;
     
     public Set<UserService> getUserservices() {
@@ -93,11 +93,6 @@ public class User {
         this.logs = logs;
     }
 
-    public void makeNullInLog() {
-        for (LogService log : logs) {
-            log.setUser(null);
-        }
-    }
     
     @Override
     public String toString() {

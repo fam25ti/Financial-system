@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  *
@@ -30,6 +31,8 @@ public class Admin implements Serializable{
     
     @Column(name = "PASS_WORD", length = 50, nullable = false)
     private String password; 
+    
+    //@Transient private String message;
 
     public Long getAdminId() {
         return adminId;
@@ -55,6 +58,14 @@ public class Admin implements Serializable{
         this.password = password;
     }
 
+//    public String getMessage() {
+//        return message;
+//    }
+//
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
+//    
     @Override
     public String toString() {
         return "Admin{" + "adminId=" + adminId + ", userName=" + userName + ", password=" + password + '}';

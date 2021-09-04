@@ -26,17 +26,7 @@ public class loginController {
     AdminRepository dao1;    
     @Autowired
     UserRepository dao2;
-   // String role = "nothing";
-    int loginCheck(){
-        if(Application.role.equals("admin")){
-            return 1; 
-        }
-        else if(Application.role.equals("user")){
-            return -1;
-        }
-        return 0;
-        
-    }    
+    
     @PostMapping(path = "/login")
     String login(@RequestBody Person person){//فرض بر این است که یوزرنیم های ادمین ها و یوزرها باهم متفاوت است
         //این مورد در زمان ایجاد یوزر یا ادمین جدید چک میشود
@@ -44,28 +34,29 @@ public class loginController {
         if(obj!=null){
             Admin admin = (Admin) obj;
             if(person.getPassword().equals(admin.getPassword())){
-                Application.role ="admin";
+                Application.role[0] =1;
                 return "you have successfully entered as admin";
             }
             else{
-                Application.role ="nothing";                                
+                Application.role[0] =0;                                
                 return "user not found";
             }
         } 
         else if((dao2.findByUserName(person.getUsername()))!=null){
             User user = dao2.findByUserName(person.getUsername());
             if(person.getPassword().equals(user.getPassword())){
-                 Application.role ="user";
+                 Application.role[0] =-1;
+                 Application.role[1]=user.getUserId();
                  return "you have successfully entered as user";
             }
             else{
-                Application.role ="nothing";                                
+                Application.role[0] =0;                                
                 return "user not found";
            
             }
         }
         else{
-            Application.role ="nothing";                        
+            Application.role[0] =0;                        
             return "user not found";
         }
         

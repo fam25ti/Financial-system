@@ -49,7 +49,7 @@ public class ServiceController extends loginController{
 
     @GetMapping (path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     List<Service> getAllService(){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
             return dao.findAll();
         
         }
@@ -57,7 +57,7 @@ public class ServiceController extends loginController{
     }
     @PostMapping (path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     Service insertService(@RequestBody Service service ){
-         if(loginCheck()==1){
+         if(Application.role[0]==1){
              return dao.save(service);
 
         }
@@ -65,7 +65,7 @@ public class ServiceController extends loginController{
     }
     @PutMapping(path = "/update/servicename",produces = MediaType.APPLICATION_JSON_VALUE)
     public Service updateServiceName(@RequestParam (name = "id") Long serviceId,@RequestBody Service service){
-            if(loginCheck()==1){
+            if(Application.role[0]==1){
                 dao.updateNameById(service.getServiceName(),serviceId);
                 return dao.findById(serviceId).get();
         }
@@ -73,7 +73,7 @@ public class ServiceController extends loginController{
     }
     @PutMapping(path = "/update/servicecost",produces = MediaType.APPLICATION_JSON_VALUE)
     public Service updateServiceCost(@RequestParam (name = "id") Long serviceId,@RequestBody Service service){
-            if(loginCheck()==1){
+            if(Application.role[0]==1){
                 dao.updateCostById(service.getServiceCost(),serviceId);
                 return dao.findById(serviceId).get();
         }
@@ -82,7 +82,7 @@ public class ServiceController extends loginController{
     }
     @PutMapping (path = "/update/serviceallowed",produces = MediaType.APPLICATION_JSON_VALUE)
     public Service updateServiceAllowed(@RequestParam (name = "id") Long serviceId,@RequestBody Service service){
-            if(loginCheck()==1){
+            if(Application.role[0]==1){
                     dao.updateNumberOfAllowedById(service.getAllowedTimes(), serviceId);
                     return dao.findById(serviceId).get();
         }
@@ -91,7 +91,7 @@ public class ServiceController extends loginController{
     }
     @DeleteMapping (path = "/delete")
     String deleteByName(@RequestParam (name = "servicename") String name){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
                     if(dao.existsServiceByServiceName(name)){
             Service service =dao.findByServiceName(name);
             Set<UserService> userservices =  service.getUserservices();
@@ -110,7 +110,7 @@ public class ServiceController extends loginController{
     }
     @PostMapping(path = "/defineserviceperiod")//to enable service in a specific time
     Service definePeriodsForService(@RequestParam (name = "id") Long serviceId,@RequestBody ServicePeriod serper){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
             long elapsedSeconds = Duration.between(serper.getStart(), serper.getEnd()).toSeconds();
        if(elapsedSeconds>0 && elapsedSeconds<=12*3600){
             Service service = dao.findById(serviceId).get();
@@ -137,14 +137,14 @@ public class ServiceController extends loginController{
     }
     @GetMapping(path="/service",produces = MediaType.APPLICATION_JSON_VALUE)
     Service getServiceByName(@RequestParam (name = "name") String name){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
         return dao.findByServiceName(name);
         }
         return null;
     }
     @GetMapping(path = "/disableservice",produces = MediaType.APPLICATION_JSON_VALUE)//to disable a service in a specific time
     ServicePeriod disableServiceInPeriodByNameService(@RequestParam (name = "id") Long periodId){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
             ServicePeriod sp = dao2.findById(periodId).get();
             sp.setStatus(false);
             dao2.save(sp);
@@ -155,7 +155,7 @@ public class ServiceController extends loginController{
     }
     @GetMapping(path = "/enableservice",produces = MediaType.APPLICATION_JSON_VALUE)//to enable a service in a specific time
     ServicePeriod enableServiceInPeriodByNameService(@RequestParam (name = "id") Long periodId){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
             ServicePeriod sp = dao2.findById(periodId).get();
             sp.setStatus(true);
             dao2.save(sp);
@@ -165,7 +165,7 @@ public class ServiceController extends loginController{
     }    
     @GetMapping(path = "/report/serviceusages")//گزارش گیری از استفاده سرویس ها توسط ادمین
     List<LogService> reportServiceUsage(){
-        if(loginCheck()==1){
+        if(Application.role[0]==1){
             return dao3.findAll();
         
         }

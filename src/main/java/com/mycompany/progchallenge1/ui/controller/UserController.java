@@ -5,6 +5,7 @@
  */
 package com.mycompany.progchallenge1.ui.controller;
 
+import com.mycompany.progchallenge1.Application;
 import com.mycompany.progchallenge1.io.dao.AdminRepository;
 import com.mycompany.progchallenge1.io.dao.LogServiceRepository;
 import com.mycompany.progchallenge1.io.dao.ServiceRepository;
@@ -51,20 +52,21 @@ public class UserController extends loginController {
     private LogServiceRepository dao4;
     @Autowired
     private AdminRepository dao5;
-        
 
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     User insertUser(@RequestBody User user) {
-        if (loginCheck() == 1) {
-            if(dao5.findByUserName(user.getUserName())==null)//برای چک کردنمتفاوت بودن یوزرنیم ادمین ها و یوزرها
-            return dao.save(user);
+        if (Application.role[0]==1) {
+            if (dao5.findByUserName(user.getUserName()) == null)//برای چک کردنمتفاوت بودن یوزرنیم ادمین ها و یوزرها
+            {
+                return dao.save(user);
+            }
         }
         return null;
     }
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     List<User> showAllUsers() {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             return dao.findAll();
         }
         return null;
@@ -72,11 +74,8 @@ public class UserController extends loginController {
 
     @DeleteMapping(path = "/delete")
     public String deleteUser(@RequestParam(name = "id") Long userId) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             if (dao.existsById(userId)) {
-                User user = dao.getById(userId);
-                user.makeNullInLog();
-                dao.save(user);
                 dao.deleteById(userId);
                 return "user with user id = " + userId + " deleted successfully";
             } else {
@@ -89,7 +88,7 @@ public class UserController extends loginController {
 
     @PutMapping(path = "/update/username")
     public User updateUsername(@RequestParam(name = "id") Long userId, @RequestBody User user) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             dao.updateUsernameById(user.getUserName(), userId);
             return dao.findById(userId).get();
         }
@@ -99,7 +98,7 @@ public class UserController extends loginController {
 
     @PutMapping(path = "/update/password")
     public User updatePassword(@RequestParam(name = "id") Long userId, @RequestBody User user) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             dao.updatePasswordById(user.getPassword(), userId);
             return dao.findById(userId).get();
 
@@ -109,7 +108,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/update/increasecredit")
     public String increaseCredit(@RequestParam(name = "id") Long userId, @RequestParam float amount) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             if (dao.existsById(userId)) {
                 dao.updateCreditById(dao.getById(userId).getCredit() + amount, userId);
                 return "Credit updated successfully";
@@ -122,7 +121,7 @@ public class UserController extends loginController {
 
     @PutMapping(path = "/update/assigncredit")
     public String assignCredit(@RequestParam(name = "id") Long userId, @RequestBody User user) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             if (dao.existsById(userId)) {
                 dao.updateCreditById(user.getCredit(), userId);
                 return "Credit updated successfully";
@@ -135,7 +134,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/find", produces = MediaType.APPLICATION_JSON_VALUE)
     public User getById(@RequestParam(name = "id") Long userId) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             return dao.findById(userId).get();
 
         }
@@ -144,7 +143,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/grantservice")//اعطای مجوز یک سرویس با استفاده از ای دی یوزر و اسم سرویس موردنظر
     String grantServiceToUser(@RequestParam(name = "userid") Long userId, @RequestParam(name = "servicename") String serviceName) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             User user = dao.findById(userId).get();
             Service service = dao2.findByServiceName(serviceName);
             UserService us = new UserService();
@@ -161,7 +160,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/cancelservice")//لغو مجوز استفاده یک سرویس برای یوزر
     String cancelServiceForUser(@RequestParam(name = "userid") Long userId, @RequestParam(name = "servicename") String serviceName) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             dao3.deleteById(new UserServiceId(userId, dao2.findByServiceName(serviceName).getServiceId()));
             return "service cancelled successfully";
         }
@@ -170,7 +169,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/grantedservices")//نمایش سرویس های مجازکاربر
     Set<Service> showGrantedServices(@RequestParam(name = "userid") Long userId) {
-        if (loginCheck() == -1) {
+        if (Application.role[0]==-1 && Application.role[1]==userId) {
             Set<UserService> us = dao.findById(userId).get().getUserservices();
             Set<Service> grantServices = new HashSet<Service>();
             for (UserService userservice : us) {
@@ -183,7 +182,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "enabledservices")//نمایش سرویس های فعال کاربر
     Set<Service> showEnabledServices(@RequestParam(name = "userid") Long userId) {
-        if (loginCheck() == -1) {
+        if (Application.role[0]==-1 && Application.role[1]==userId) {
             LocalDate ld = LocalDate.now();
             LocalTime lt = LocalTime.now();
             Set<Service> enables = new HashSet<Service>();
@@ -210,7 +209,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/useservice")//to use a service(by user)
     String useAnEnabledService(@RequestParam(name = "userid") Long userId, @RequestParam(name = "serviceid") Long serviceId) {
-        if (loginCheck() == -1) {
+        if (Application.role[0]==-1 && Application.role[1]==userId) {
             Set<Service> enables = showEnabledServices(userId);//call API
             LocalDate date_now;
             LocalTime time_now;
@@ -253,7 +252,7 @@ public class UserController extends loginController {
 
     @GetMapping(path = "/userservices/report")
     Set<LogService> getUserServicesReports(@RequestParam(name = "userid") Long userId) {
-        if (loginCheck() == -1) {
+        if (Application.role[0]==-1 && Application.role[1]==userId) {
             return dao.getById(userId).getLogs();
 
         }

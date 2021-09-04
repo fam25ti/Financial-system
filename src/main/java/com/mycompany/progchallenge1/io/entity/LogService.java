@@ -44,9 +44,9 @@ public class LogService {
     
     @Column(name = "SERVICE_ID")
     private Long serviceId;
-    @ManyToOne
-   @JsonBackReference
-    @JoinColumn(name="USER_ID", nullable = true)
+    @ManyToOne(optional=false)
+    @JsonBackReference
+    @JoinColumn(name="USER_ID")
     private User user;
     
     public Long getLogId() {

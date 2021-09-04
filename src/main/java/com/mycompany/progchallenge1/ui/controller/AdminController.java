@@ -5,6 +5,7 @@
  */
 package com.mycompany.progchallenge1.ui.controller;
 
+import com.mycompany.progchallenge1.Application;
 import com.mycompany.progchallenge1.io.dao.AdminRepository;
 import com.mycompany.progchallenge1.io.dao.UserRepository;
 import com.mycompany.progchallenge1.io.entity.Admin;
@@ -32,12 +33,14 @@ public class AdminController extends loginController {
 
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     Admin insertAdmin(@RequestBody Admin admin) {
-        if (loginCheck() == 1) {
+        if (Application.role[0]==1) {
             if (dao2.findByUserName(admin.getUserName()) == null)//برای چک کردنمتفاوت بودن یوزرنیم ادمین ها و یوزرها
             {
                 return dao.save(admin);
             }
         }
+//        Admin adminerror = new Admin();
+//        adminerror.setMessage("you are not admin");
         return null;
     }
 
