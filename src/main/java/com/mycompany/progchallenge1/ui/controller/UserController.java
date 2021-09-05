@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "/users")
-public class UserController extends loginController {
+public class UserController {
 
     @Autowired
     private UserRepository dao;
@@ -194,11 +194,12 @@ public class UserController extends loginController {
                             && sp.getStart().compareTo(lt) <= 0 && sp.getEnd().compareTo(lt) > 0) {
 
                         enables.add(service);
-                    } else {
-                        System.out.println("sp.getDate().compareTo(ld) " + sp.getDate().compareTo(ld)
-                                + " sp.getStart().compareTo(lt) " + sp.getStart().compareTo(lt) + "sp.getEnd().compareTo(lt)>0 "
-                                + sp.getEnd().compareTo(lt));
-                    }
+                    } 
+                    //else {
+//                        System.out.println("sp.getDate().compareTo(ld) " + sp.getDate().compareTo(ld)
+//                                + " sp.getStart().compareTo(lt) " + sp.getStart().compareTo(lt) + "sp.getEnd().compareTo(lt)>0 "
+//                                + sp.getEnd().compareTo(lt));
+                   // }
                 }
             }
             return enables;
@@ -224,15 +225,14 @@ public class UserController extends loginController {
                                 time_now = LocalTime.now();
                                 userService.setUsetimes(((userService.getUsetimes()) + 1));//update number of usage times
                                 user.setCredit((user.getCredit() - service.getServiceCost()));
-                                dao.save(user);
-                                dao3.save(userService);
                                 LogService log = new LogService();
                                 log.setDate(date_now);
                                 log.setTime(time_now);
                                 log.setServiceName(service.getServiceName());
                                 log.setServiceId(service.getServiceId());
                                 log.setUser(user);
-                                dao4.save(log);
+                                user.getLogs().add(log);
+                                dao.save(user);                                
                                 return "You have used this service successfully!";
                             } else {
                                 return "you have not enough credit for this service!";

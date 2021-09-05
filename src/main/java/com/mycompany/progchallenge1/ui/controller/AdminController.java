@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "/admins")
-public class AdminController extends loginController {
+public class AdminController {
     @Autowired
     private AdminRepository dao;
      @Autowired

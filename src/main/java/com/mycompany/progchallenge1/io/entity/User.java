@@ -38,10 +38,10 @@ public class User {
     
     @OneToMany(mappedBy = "_user", cascade = CascadeType.ALL)
     @JsonBackReference
+    //@JsonManagedReference
     private Set<UserService> userservices;
     
     @JsonManagedReference
-    //@JsonBackReference
     @OneToMany(mappedBy = "user",cascade={CascadeType.PERSIST,CascadeType.MERGE},orphanRemoval=true)
     private Set<LogService> logs;
     

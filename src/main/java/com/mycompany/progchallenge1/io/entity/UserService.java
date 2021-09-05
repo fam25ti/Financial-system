@@ -23,12 +23,13 @@ public class UserService {
     private UserServiceId id = new UserServiceId();
     @ManyToOne
     @MapsId("userId")
-
+    ///////////////
+    //@JsonBackReference
     private User _user;
  
     @ManyToOne
     @MapsId("serviceId")
-    //@JsonManagedReference
+    //@JsonBackReference
     private Service _service;
     
     @Column(name = "USE_TIMES")

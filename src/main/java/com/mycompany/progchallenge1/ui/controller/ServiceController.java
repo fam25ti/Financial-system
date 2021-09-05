@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "/services")
-public class ServiceController extends loginController{
+public class ServiceController{
 
     @Autowired
     private ServiceRepository dao; 
@@ -123,7 +123,7 @@ public class ServiceController extends loginController{
        serper.setService(service);
        serper.setStatus(true);
        dao2.save(serper); 
-       service.getPeriods().add(serper);
+      // service.getPeriods().add(serper);
        //dao.save(service);
         
 
@@ -135,7 +135,7 @@ public class ServiceController extends loginController{
        return null;
         
     }
-    @GetMapping(path="/service",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path="/service",produces = MediaType.APPLICATION_JSON_VALUE)//find service by name
     Service getServiceByName(@RequestParam (name = "name") String name){
         if(Application.role[0]==1){
         return dao.findByServiceName(name);

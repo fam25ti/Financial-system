@@ -39,12 +39,10 @@ public class ServicePeriod implements Serializable{
     private Long periodId;
     
     @Column(name = "START_TIME",columnDefinition = "TIME")
-//    @Temporal(TemporalType.TIME)
-    // @JsonbDateFormat("dd/MM/yyyy")
+
     private LocalTime start;  
     
     @Column(name = "END_TIME", columnDefinition = "TIME")
-//    @Temporal(TemporalType.TIME)
     private LocalTime end;
     
     @Column(name = "DAY_DATE", columnDefinition = "DATE")
